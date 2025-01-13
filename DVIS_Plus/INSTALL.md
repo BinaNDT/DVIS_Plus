@@ -40,3 +40,32 @@ pip install -r requirements.txt
 cd mask2former/modeling/pixel_decoder/ops
 sh make.sh
 ```
+
+### Example pip .env environment setup
+```bash
+python3 -m venv .env
+
+source .env/bin/activate
+
+# Get most recent version of pytorch (may not work forever, we'll see) compatible w/ CUDA 12.x
+# There are 2 versions of CUDA, 11.5 (native) and 12.1 (/usr/local/cuda-12.1)
+# To use the pytorch version compatible w/ CUDA 11.x, we NEED gcc/g++ 10. Otherwise, Detectron2 fails to
+# compile from source using the command give later.
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Read the paragraph above to understand why we need this line. This helps Detectron2 build using the proper CUDA.
+export CUDA_HOME=/usr/local/cuda-12.1
+
+# Build Detectron2 from source
+python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
+
+# install panoptic api
+pip install git+https://github.com/cocodataset/panopticapi.git
+
+# install relevant dependencies
+cd DVIS_Plus
+pip install -r requirements.txt
+
+cd mask2former/modeling/pixel_decoder/ops
+sh make.sh
+```
