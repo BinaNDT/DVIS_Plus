@@ -54,7 +54,8 @@ def register_video_vspw_vss(
     MetadataCatalog.get(name).set(
         image_root=image_root,
         evaluator_type=None,
-        ignore_label=255,
+        # ignore_label=255,
+        ignore_label=0,
         **metadata,
     )
 
@@ -222,29 +223,85 @@ def get_metadata():
     return meta
 
 
+def get_hurricanevidnet_metadata():
+    # Define categories from class_mapping.csv
+    categories = [
+        {"id": 1, "name": "Building-Major-Damage", "isthing": 1, "color": [255, 50, 50]},
+        {"id": 2, "name": "Building-Minor-Damage", "isthing": 1, "color": [214, 255, 50]},
+        {"id": 3, "name": "Building-No-Damage", "isthing": 1, "color": [50, 255, 132]},
+        {"id": 4, "name": "Building-Total-Destruction", "isthing": 1, "color": [50, 132, 255]},
+    ]
+
+    # Prepare metadata
+    classes = [k["name"] for k in categories]
+    colors = [k["color"] for k in categories]
+    classes_id = [k["id"] for k in categories]
+
+    dataset_id_to_contiguous_id = {k["id"]: idx for idx, k in enumerate(categories)}
+
+    # Create metadata dictionary
+    meta = {
+        "stuff_classes": classes,
+        "stuff_colors": colors,
+        "stuff_classes_id": classes_id,
+        "stuff_dataset_id_to_contiguous_id": dataset_id_to_contiguous_id,
+        "thing_classes": classes,
+        "thing_colors": colors,
+        "thing_dataset_id_to_contiguous_id": dataset_id_to_contiguous_id,
+        # "ignore_label": 255,
+    }
+    return meta
+
+
 _PREDEFINED_SPLITS_PANOVSPW = {
-    "VSPW_vss_video_train": (
-        "VSPW_480p/data/",
-        "VSPW_480p/train.txt",
+    # "VSPW_vss_video_train": (
+    #     "VSPW_480p/data/",
+    #     "VSPW_480p/train.txt",
+    # ),
+    # "VSPW_vss_video_val": (
+    #     "VSPW_480p/data/",
+    #     "VSPW_480p/val.txt",
+    # ),
+    # "VSPW_vss_video_test": (
+    #     "VSPW_480p/data/",
+    #     "VSPW_480p/test.txt",
+    # ),
+    "HurricaneVidNet_vss_video_train": (
+        "vspw_format/data/",
+        "vspw_format/train.txt"
     ),
-    "VSPW_vss_video_val": (
-        "VSPW_480p/data/",
-        "VSPW_480p/val.txt",
+    "HurricaneVidNet_vss_video_val": (
+        "vspw_format/data/",
+        "vspw_format/val.txt"
     ),
-    "VSPW_vss_video_test": (
-        "VSPW_480p/data/",
-        "VSPW_480p/test.txt",
+    "HurricaneVidNet_vss_video_test": (
+        "vspw_format/data/",
+        "vspw_format/test.txt"
     ),
 }
 
+# def register_all_video_panoVSPW(root):
+#     for (
+#             prefix,
+#             (image_root, split_txt),
+#     ) in _PREDEFINED_SPLITS_PANOVSPW.items():
+#         metadata = get_metadata()
+#         # The "standard" version of COCO panoptic segmentation dataset,
+#         # e.g. used by Panoptic-DeepLab
+#         register_video_vspw_vss(
+#             prefix,
+#             metadata,
+#             os.path.join(root, image_root),
+#             os.path.join(root, split_txt),
+#         )
+
 def register_all_video_panoVSPW(root):
-    for (
-            prefix,
-            (image_root, split_txt),
-    ) in _PREDEFINED_SPLITS_PANOVSPW.items():
-        metadata = get_metadata()
-        # The "standard" version of COCO panoptic segmentation dataset,
-        # e.g. used by Panoptic-DeepLab
+    for prefix, (image_root, split_txt) in _PREDEFINED_SPLITS_PANOVSPW.items():
+        if "HurricaneVidNet" in prefix:
+            metadata = get_hurricanevidnet_metadata()  # Use HurricaneVidNet metadata
+        else:
+            metadata = get_metadata()  # Use VSPW metadata for other datasets
+
         register_video_vspw_vss(
             prefix,
             metadata,
