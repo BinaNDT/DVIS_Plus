@@ -1,5 +1,6 @@
 cython
-scipy==1.5.4
+# scipy==1.5.4 # Breaks because of dependency issues
+scipy
 matplotlib==3.3.4
 shapely
 timm
