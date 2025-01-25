@@ -36,6 +36,7 @@ pip install git+https://github.com/cocodataset/panopticapi.git
 
 git clone https://github.com/zhang-tao-whu/DVIS_Plus.git
 cd DVIS_Plus
+cd DVIS_Plus
 pip install -r requirements.txt
 cd mask2former/modeling/pixel_decoder/ops
 sh make.sh
