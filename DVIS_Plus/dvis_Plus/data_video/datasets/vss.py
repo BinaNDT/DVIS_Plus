@@ -54,8 +54,8 @@ def register_video_vspw_vss(
     MetadataCatalog.get(name).set(
         image_root=image_root,
         evaluator_type=None,
-        # ignore_label=255,
-        ignore_label=0,
+        ignore_label=255,
+        # ignore_label=0,
         **metadata,
     )
 
@@ -226,10 +226,11 @@ def get_metadata():
 def get_hurricanevidnet_metadata():
     # Define categories from class_mapping.csv
     categories = [
-        {"id": 1, "name": "Building-Major-Damage", "isthing": 1, "color": [255, 50, 50]},
-        {"id": 2, "name": "Building-Minor-Damage", "isthing": 1, "color": [214, 255, 50]},
-        {"id": 3, "name": "Building-No-Damage", "isthing": 1, "color": [50, 255, 132]},
-        {"id": 4, "name": "Building-Total-Destruction", "isthing": 1, "color": [50, 132, 255]},
+        {"id": 0, "name": "Background", "isthing": 0, "color": [128, 128, 128]},  # Neutral gray for the background
+        {"id": 1, "name": "Building-Major-Damage", "isthing": 1, "color": [255, 50, 50]},  # Bright red
+        {"id": 2, "name": "Building-Minor-Damage", "isthing": 1, "color": [214, 255, 50]},  # Bright yellow-green
+        {"id": 3, "name": "Building-No-Damage", "isthing": 1, "color": [50, 255, 132]},  # Bright green
+        {"id": 4, "name": "Building-Total-Destruction", "isthing": 1, "color": [50, 132, 255]},  # Bright blue
     ]
 
     # Prepare metadata
@@ -248,7 +249,6 @@ def get_hurricanevidnet_metadata():
         "thing_classes": classes,
         "thing_colors": colors,
         "thing_dataset_id_to_contiguous_id": dataset_id_to_contiguous_id,
-        # "ignore_label": 255,
     }
     return meta
 

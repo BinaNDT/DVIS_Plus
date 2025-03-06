@@ -5,9 +5,10 @@ MODEL:
   META_ARCHITECTURE: "MinVIS"
   SEM_SEG_HEAD:
     NAME: "MaskFormerHead"
-    IGNORE_VALUE: 0
-    NUM_CLASSES: 4
-    # IGNORE_VALUE: 255
+    # IGNORE_VALUE: 0
+    # NUM_CLASSES: 4
+    NUM_CLASSES: 5 # Background SHOULD be considered, or else you get crazy predictions...
+    IGNORE_VALUE: 255
     # NUM_CLASSES: 124
     LOSS_WEIGHT: 1.0
     CONVS_DIM: 256
@@ -68,7 +69,7 @@ DATASETS:
   # TRAIN: ("VSPW_vss_video_train",)
   # TEST: ("VSPW_vss_video_val",)
   TRAIN: ("HurricaneVidNet_vss_video_train",)
-  TEST: ("HurricaneVidNet_vss_video_val",)
+  TEST: ("HurricaneVidNet_vss_video_test",)
 
 OUTPUT_DIR: './output_MinVIS_R50_480p_VSPW'
 
