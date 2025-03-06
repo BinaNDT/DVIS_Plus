@@ -10,7 +10,7 @@
 - Panopticapi: `pip install git+https://github.com/cocodataset/panopticapi.git`
 - `pip install -r requirements.txt`
 
-### CUDA kernel for MSDeformAttn
+### CUDA kernel for MSDeformAttn (Skip this step)
 After preparing the required environment, run the following command to compile CUDA kernel for MSDeformAttn:
 
 `CUDA_HOME` must be defined and points to the directory of the installed CUDA toolkit.
@@ -20,7 +20,7 @@ cd mask2former/modeling/pixel_decoder/ops
 sh make.sh
 ```
 
-### Example conda environment setup
+### Example conda environment setup (Skip this step)
 ```bash
 conda create --name dvis python=3.8 -y
 conda activate dvis
@@ -36,12 +36,13 @@ pip install git+https://github.com/cocodataset/panopticapi.git
 
 git clone https://github.com/zhang-tao-whu/DVIS_Plus.git
 cd DVIS_Plus
+cd DVIS_Plus
 pip install -r requirements.txt
 cd mask2former/modeling/pixel_decoder/ops
 sh make.sh
 ```
 
-### Example pip .env environment setup
+### Example pip .env environment setup (COMPLETE THIS STEP)
 ```bash
 python3 -m venv .env
 
