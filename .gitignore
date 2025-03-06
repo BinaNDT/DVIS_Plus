@@ -1,4 +1,13 @@
 .env*/
 archive/
 
+# Pycache
 */**/__pycache__
+
+# Backbone Models (large files ~1-2GB)
+*/**/*.pth
+
+# Modeling outputs
+*/**/inference
+DVIS_Plus/mask2former/modeling/
+output_*
