@@ -6,6 +6,7 @@ archive/
 
 # Backbone Models (large files ~1-2GB)
 */**/*.pth
+*.pth
 
 # Modeling outputs
 */**/inference
