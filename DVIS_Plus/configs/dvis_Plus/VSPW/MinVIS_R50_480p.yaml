@@ -1,75 +1,86 @@
+# MinVIS (Minimal Video Instance Segmentation) configuration with 480p resolution
+# Extends the base configuration with:
+# - MinVIS-specific model architecture settings
+# - 5-class semantic segmentation head (including background)
+# - Video transformer decoder configuration
+# - Training parameters optimized for 480p resolution
+# - Dataset configuration for HurricaneVidNet
+# - Single frame sampling during training
+
 _BASE_: Base-VSPW-VideoInstanceSegmentation.yaml
 
 MODEL:
-  WEIGHTS: "model_final_3c8ec9.pkl"
-  META_ARCHITECTURE: "MinVIS"
-  SEM_SEG_HEAD:
-    NAME: "MaskFormerHead"
+  WEIGHTS: "model_final_3c8ec9.pkl"  # Pretrained model weights
+  META_ARCHITECTURE: "MinVIS"  # Use MinVIS architecture
+  SEM_SEG_HEAD:  # Semantic segmentation head configuration
+    NAME: "MaskFormerHead"  # Use MaskFormer head
     # IGNORE_VALUE: 0
     # NUM_CLASSES: 4
-    NUM_CLASSES: 5 # Background SHOULD be considered, or else you get crazy predictions...
-    IGNORE_VALUE: 255
+    NUM_CLASSES: 5  # Number of classes including background
+    IGNORE_VALUE: 255  # Value to ignore in loss computation
     # NUM_CLASSES: 124
-    LOSS_WEIGHT: 1.0
-    CONVS_DIM: 256
-    MASK_DIM: 256
-    NORM: "GN"
+    LOSS_WEIGHT: 1.0  # Weight of segmentation loss
+    CONVS_DIM: 256  # Dimension of convolutions
+    MASK_DIM: 256  # Dimension of mask features
+    NORM: "GN"  # Use Group Normalization
     # pixel decoder
-    PIXEL_DECODER_NAME: "MSDeformAttnPixelDecoder"
-    IN_FEATURES: ["res2", "res3", "res4", "res5"]
-    DEFORMABLE_TRANSFORMER_ENCODER_IN_FEATURES: ["res3", "res4", "res5"]
-    COMMON_STRIDE: 4
-    TRANSFORMER_ENC_LAYERS: 6
-  MASK_FORMER:
-    TRANSFORMER_DECODER_NAME: "VideoMultiScaleMaskedTransformerDecoder_minvis"
-    REID_BRANCH: False
-    TRANSFORMER_IN_FEATURE: "multi_scale_pixel_decoder"
-    DEEP_SUPERVISION: True
-    NO_OBJECT_WEIGHT: 0.1
-    CLASS_WEIGHT: 2.0
-    MASK_WEIGHT: 5.0
-    DICE_WEIGHT: 5.0
-    HIDDEN_DIM: 256
-    NUM_OBJECT_QUERIES: 100
-    NHEADS: 8
-    DROPOUT: 0.0
-    DIM_FEEDFORWARD: 2048
-    ENC_LAYERS: 0
-    PRE_NORM: False
-    ENFORCE_INPUT_PROJ: False
-    SIZE_DIVISIBILITY: 32
-    DEC_LAYERS: 10  # 9 decoder layers, add one for the loss on learnable query
-    TRAIN_NUM_POINTS: 12544
-    OVERSAMPLE_RATIO: 3.0
-    IMPORTANCE_SAMPLE_RATIO: 0.75
-    TEST:
-      OVERLAP_THRESHOLD: 0.8
-      OBJECT_MASK_THRESHOLD: 0.8
-      WINDOW_INFERENCE: True
-      WINDOW_SIZE: 3
-SOLVER:
-  IMS_PER_BATCH: 8
-  STEPS: (14000,)
-  MAX_ITER: 20000
-INPUT:
-  SAMPLING_FRAME_NUM: 1
-  MIN_SIZE_TRAIN_SAMPLING: "choice"
-  RANDOM_FLIP: "flip"
-  AUGMENTATIONS: []
-  MIN_SIZE_TRAIN: (288, 320, 352, 384, 416, 448, 480, 512, 544, 576, 608, 640)
-  MIN_SIZE_TEST: 480
-  FORMAT: "RGB"
+    PIXEL_DECODER_NAME: "MSDeformAttnPixelDecoder"  # Use deformable attention pixel decoder
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]  # Input features from backbone
+    DEFORMABLE_TRANSFORMER_ENCODER_IN_FEATURES: ["res3", "res4", "res5"]  # Features for deformable transformer
+    COMMON_STRIDE: 4  # Common stride for feature maps
+    TRANSFORMER_ENC_LAYERS: 6  # Number of transformer encoder layers
+  MASK_FORMER:  # MaskFormer specific settings
+    TRANSFORMER_DECODER_NAME: "VideoMultiScaleMaskedTransformerDecoder_minvis"  # Video-specific transformer decoder
+    REID_BRANCH: False  # Disable re-identification branch
+    TRANSFORMER_IN_FEATURE: "multi_scale_pixel_decoder"  # Input feature for transformer
+    DEEP_SUPERVISION: True  # Enable deep supervision
+    NO_OBJECT_WEIGHT: 0.1  # Weight for no-object class
+    CLASS_WEIGHT: 2.0  # Weight for classification loss
+    MASK_WEIGHT: 5.0  # Weight for mask loss
+    DICE_WEIGHT: 5.0  # Weight for dice loss
+    HIDDEN_DIM: 256  # Hidden dimension of transformer
+    NUM_OBJECT_QUERIES: 100  # Number of object queries
+    NHEADS: 8  # Number of attention heads
+    DROPOUT: 0.0  # Dropout rate
+    DIM_FEEDFORWARD: 2048  # Feed-forward dimension
+    ENC_LAYERS: 0  # Number of encoder layers
+    PRE_NORM: False  # Whether to use pre-normalization
+    ENFORCE_INPUT_PROJ: False  # Whether to enforce input projection
+    SIZE_DIVISIBILITY: 32  # Size divisibility for feature maps
+    DEC_LAYERS: 10  # Number of decoder layers
+    TRAIN_NUM_POINTS: 12544  # Number of points for training
+    OVERSAMPLE_RATIO: 3.0  # Oversampling ratio
+    IMPORTANCE_SAMPLE_RATIO: 0.75  # Importance sampling ratio
+    TEST:  # Test-time settings
+      OVERLAP_THRESHOLD: 0.8  # Threshold for mask overlap
+      OBJECT_MASK_THRESHOLD: 0.8  # Threshold for object mask
+      WINDOW_INFERENCE: True  # Enable window-based inference
+      WINDOW_SIZE: 3  # Size of temporal window
 
-DATASETS:
-  DATASET_RATIO: [1.0, ]
-  DATASET_NEED_MAP: [False, ]
-  DATASET_TYPE: ['video_semantic', ]
-  DATASET_TYPE_TEST: ['video_semantic', ]
+SOLVER:  # Solver settings
+  IMS_PER_BATCH: 8  # Images per batch
+  STEPS: (14000,)  # Learning rate schedule steps
+  MAX_ITER: 20000  # Maximum number of iterations
+
+INPUT:  # Input processing settings
+  SAMPLING_FRAME_NUM: 1  # Number of frames to sample
+  MIN_SIZE_TRAIN_SAMPLING: "choice"  # How to sample minimum size
+  RANDOM_FLIP: "flip"  # Enable random flipping
+  AUGMENTATIONS: []  # Additional augmentations
+  MIN_SIZE_TRAIN: (288, 320, 352, 384, 416, 448, 480, 512, 544, 576, 608, 640)  # Training size range
+  MIN_SIZE_TEST: 480  # Test size
+  FORMAT: "RGB"  # Input format
+
+DATASETS:  # Dataset settings
+  DATASET_RATIO: [1.0, ]  # Dataset sampling ratio
+  DATASET_NEED_MAP: [False, ]  # Whether dataset needs mapping
+  DATASET_TYPE: ['video_semantic', ]  # Dataset type
+  DATASET_TYPE_TEST: ['video_semantic', ]  # Test dataset type
   # The categories of all datasets will be mapped to the categories of the last dataset
   # TRAIN: ("VSPW_vss_video_train",)
   # TEST: ("VSPW_vss_video_val",)
-  TRAIN: ("HurricaneVidNet_vss_video_train",)
-  TEST: ("HurricaneVidNet_vss_video_test",)
+  TRAIN: ("HurricaneVidNet_vss_video_train",)  # Training dataset
+  TEST: ("HurricaneVidNet_vss_video_test",)  # Test dataset
 
-OUTPUT_DIR: './output_MinVIS_R50_480p_VSPW'
+OUTPUT_DIR: './output_MinVIS_R50_480p_VSPW'  # Output directory
 

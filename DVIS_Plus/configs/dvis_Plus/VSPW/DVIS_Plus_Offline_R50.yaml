@@ -1,21 +1,33 @@
+# DVIS Plus Offline configuration
+# Extends DVIS Plus Online with:
+# - Offline tracking capabilities
+# - Curriculum Learning (CL) enabled in the refiner
+# - Extended temporal context (21 frames)
+# - Larger sampling range (10 frames)
+# - Reverse augmentation enabled
+# - Cropping enabled for both main and pseudo videos
+# - Optimized for post-processing and refinement
+
 _BASE_: DVIS_Plus_Online_R50.yaml
+
 MODEL:
-  META_ARCHITECTURE: "DVIS_Plus_offline"
+  META_ARCHITECTURE: "DVIS_Plus_offline"  # Use DVIS Plus offline architecture
   REFINER:
-    USE_CL: True
+    USE_CL: True  # Enable Curriculum Learning in the refiner
+
 SOLVER:
-  IMS_PER_BATCH: 8
-  STEPS: (14000,)
-  MAX_ITER: 20000
+  IMS_PER_BATCH: 8  # Images per batch
+  STEPS: (14000,)  # Learning rate schedule steps
+  MAX_ITER: 20000  # Maximum number of iterations
 
 INPUT:
-  SAMPLING_FRAME_NUM: 21
-  SAMPLING_FRAME_RANGE: 10
-  REVERSE_AGU: True
+  SAMPLING_FRAME_NUM: 21  # Extended number of frames for better temporal context
+  SAMPLING_FRAME_RANGE: 10  # Larger sampling range for more temporal information
+  REVERSE_AGU: True  # Enable reverse augmentation
   CROP:
-    ENABLED: True
+    ENABLED: True  # Enable cropping for main videos
   PSEUDO:
     CROP:
-      ENABLED: True
+      ENABLED: True  # Enable cropping for pseudo videos
 
-OUTPUT_DIR: './output_DVIS_Plus_Offline_R50_VSPW'
+OUTPUT_DIR: './output_DVIS_Plus_Offline_R50_VSPW'  # Output directory for offline model

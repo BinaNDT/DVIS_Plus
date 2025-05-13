@@ -1,63 +1,77 @@
+# Base configuration for VSPW (Video Scene Parsing in the Wild) video instance segmentation
+# This is the root configuration file that defines fundamental model architecture and training parameters
+# Key components:
+# - ResNet-50 backbone with ImageNet pretrained weights
+# - Basic training parameters (learning rate, batch size, etc.)
+# - Dataset configuration for VSPW
+# - Input preprocessing settings
+# - Solver configuration with AdamW optimizer and gradient clipping
+
 MODEL:
   BACKBONE:
-    FREEZE_AT: 0
-    NAME: "build_resnet_backbone"
-  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"
-  PIXEL_MEAN: [123.675, 116.280, 103.530]
-  PIXEL_STD: [58.395, 57.120, 57.375]
-  MASK_ON: True
+    FREEZE_AT: 0  # Don't freeze any backbone layers during training
+    NAME: "build_resnet_backbone"  # Use ResNet as the backbone architecture
+  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"  # Pretrained ImageNet weights
+  PIXEL_MEAN: [123.675, 116.280, 103.530]  # RGB mean values for normalization
+  PIXEL_STD: [58.395, 57.120, 57.375]  # RGB standard deviation values for normalization
+  MASK_ON: True  # Enable mask prediction
   RESNETS:
-    DEPTH: 50
-    STEM_TYPE: "basic"  # not used
-    STEM_OUT_CHANNELS: 64
-    STRIDE_IN_1X1: False
-    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
-    # NORM: "SyncBN"
-    RES5_MULTI_GRID: [1, 1, 1]  # not used
+    DEPTH: 50  # Use ResNet-50 architecture
+    STEM_TYPE: "basic"  # Basic stem type for ResNet (apparently not used)
+    STEM_OUT_CHANNELS: 64  # Number of output channels in stem
+    STRIDE_IN_1X1: False  # Don't use stride in 1x1 convolutions
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]  # Output feature maps to use
+    RES5_MULTI_GRID: [1, 1, 1]  # Multi-grid settings for res5
   MASK_FORMER:
     TEST:
       # A larger windows_size can be used if there is more GPU memory.
-      WINDOW_SIZE: 3
-      WINDOW_INFERENCE: True
-      TASK: 'vss'
+      WINDOW_SIZE: 3  # Size of temporal window for inference
+      WINDOW_INFERENCE: True  # Enable window-based inference
+      TASK: 'vss'  # Video semantic segmentation task
+
 DATASETS:
-  DATASET_RATIO: [1.0, ]
-  DATASET_NEED_MAP: [False, ]
-  DATASET_TYPE: ['video_semantic', ]
-  DATASET_TYPE_TEST: ['video_semantic', ]
-  TRAIN: ("VSPW_vss_video_train",)
-  TEST: ("VSPW_vss_video_val",)
+  DATASET_RATIO: [1.0, ]  # Dataset sampling ratio
+  DATASET_NEED_MAP: [False, ]  # Whether dataset needs category mapping
+  DATASET_TYPE: ['video_semantic', ]  # Type of dataset
+  DATASET_TYPE_TEST: ['video_semantic', ]  # Type of test dataset
+  TRAIN: ("VSPW_vss_video_train",)  # Training dataset
+  TEST: ("VSPW_vss_video_val",)  # Validation dataset
+
 SOLVER:
-  IMS_PER_BATCH: 16
-  BASE_LR: 0.0001
-  STEPS: (7000,)
-  MAX_ITER: 10000
-  WARMUP_FACTOR: 1.0
-  WARMUP_ITERS: 10
-  WEIGHT_DECAY: 0.05
-  OPTIMIZER: "ADAMW"
-  BACKBONE_MULTIPLIER: 0.1
-  CLIP_GRADIENTS:
+  IMS_PER_BATCH: 16  # Images per batch
+  BASE_LR: 0.0001  # Base learning rate
+  STEPS: (7000,)  # Learning rate schedule steps
+  MAX_ITER: 10000  # Maximum number of iterations
+  WARMUP_FACTOR: 1.0  # Learning rate warmup factor
+  WARMUP_ITERS: 10  # Number of warmup iterations
+  WEIGHT_DECAY: 0.05  # Weight decay for regularization
+  OPTIMIZER: "ADAMW"  # Use AdamW optimizer
+  BACKBONE_MULTIPLIER: 0.1  # Learning rate multiplier for backbone
+  CLIP_GRADIENTS:  # Gradient clipping settings
     ENABLED: True
     CLIP_TYPE: "full_model"
     CLIP_VALUE: 0.01
     NORM_TYPE: 2.0
-  AMP:
+  AMP:  # Automatic Mixed Precision settings
     ENABLED: True
+
 INPUT:
-  MIN_SIZE_TRAIN_SAMPLING: "choice"
-  RANDOM_FLIP: "flip"
-  AUGMENTATIONS: []
-  MIN_SIZE_TRAIN: (360, 480)
-  MIN_SIZE_TEST: 360
-  CROP:
+  MIN_SIZE_TRAIN_SAMPLING: "choice"  # How to sample minimum size during training
+  RANDOM_FLIP: "flip"  # Enable random horizontal flipping
+  AUGMENTATIONS: []  # Additional augmentations
+  MIN_SIZE_TRAIN: (360, 480)  # Minimum training image size range
+  MIN_SIZE_TEST: 360  # Minimum test image size
+  CROP:  # Cropping settings
     ENABLED: False
     TYPE: "absolute_range"
     SIZE: (600, 720)
-  FORMAT: "RGB"
+  FORMAT: "RGB"  # Input image format
+
 TEST:
-  EVAL_PERIOD: 0
+  EVAL_PERIOD: 0  # Evaluation period during training
+
 DATALOADER:
-  FILTER_EMPTY_ANNOTATIONS: False
-  NUM_WORKERS: 4
-VERSION: 2
+  FILTER_EMPTY_ANNOTATIONS: False  # Whether to filter empty annotations
+  NUM_WORKERS: 4  # Number of data loading workers
+
+VERSION: 2  # Configuration version

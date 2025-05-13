@@ -1,14 +1,20 @@
+# MinVIS configuration with 720p resolution
+# Extends the 480p configuration with:
+# - Higher resolution training and testing settings
+# - Extended range of training image sizes (480-800)
+# - 720p minimum test size
+# - Maintains same model architecture but optimized for higher resolution
+
 _BASE_: MinVIS_R50_480p.yaml
 
-
 INPUT:
-  MIN_SIZE_TRAIN: (480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800)
-  MAX_SIZE_TRAIN: 1333
-  MIN_SIZE_TEST: 720
+  MIN_SIZE_TRAIN: (480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800)  # Extended range of training sizes
+  MAX_SIZE_TRAIN: 1333  # Maximum training size
+  MIN_SIZE_TEST: 720  # Minimum test size set to 720p
 
   # For pseudo videos
-  PSEUDO:
-    MAX_SIZE_TRAIN: 1333
-    MIN_SIZE_TRAIN: (480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800)
+  PSEUDO:  # Settings for pseudo-video generation
+    MAX_SIZE_TRAIN: 1333  # Maximum size for pseudo-video training
+    MIN_SIZE_TRAIN: (480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800)  # Size range for pseudo-videos
 
-OUTPUT_DIR: './output_MinVIS_R50_720p_VSPW'
+OUTPUT_DIR: './output_MinVIS_R50_720p_VSPW'  # Output directory for 720p model

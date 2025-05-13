@@ -1,25 +1,34 @@
+# DVIS Plus Online configuration
+# Extends MinVIS 720p with:
+# - Online tracking capabilities
+# - ReID (Re-identification) branch enabled
+# - Noise handling with weighted averaging
+# - 5-frame sampling for temporal consistency
+# - Disabled cropping for both main and pseudo videos
+
 _BASE_: MinVIS_R50_720p.yaml
+
 MODEL:
-  META_ARCHITECTURE: "DVIS_Plus_online"
+  META_ARCHITECTURE: "DVIS_Plus_online"  # Use DVIS Plus online architecture
   MASK_FORMER:
-    TRANSFORMER_DECODER_NAME: "VideoMultiScaleMaskedTransformerDecoder_dvisPlus"
-    REID_BRANCH: True
+    TRANSFORMER_DECODER_NAME: "VideoMultiScaleMaskedTransformerDecoder_dvisPlus"  # DVIS Plus specific decoder
+    REID_BRANCH: True  # Enable re-identification branch for better tracking
   TRACKER:
-    NOISE_MODE: "wa"
-    NOISE_RATIO: 0.5
+    NOISE_MODE: "wa"  # Weighted averaging for noise handling
+    NOISE_RATIO: 0.5  # Noise ratio for weighted averaging
 
 SOLVER:
-  IMS_PER_BATCH: 8
-  STEPS: (14000,)
-  MAX_ITER: 20000
+  IMS_PER_BATCH: 8  # Images per batch
+  STEPS: (14000,)  # Learning rate schedule steps
+  MAX_ITER: 20000  # Maximum number of iterations
 
 INPUT:
-  SAMPLING_FRAME_NUM: 5
-  SAMPLING_FRAME_RANGE: 2
+  SAMPLING_FRAME_NUM: 5  # Number of frames to sample for temporal consistency
+  SAMPLING_FRAME_RANGE: 2  # Range of frames to sample from
   CROP:
-    ENABLED: False
+    ENABLED: False  # Disable cropping for main videos
   PSEUDO:
     CROP:
-      ENABLED: False
+      ENABLED: False  # Disable cropping for pseudo videos
 
-OUTPUT_DIR: './output_DVIS_Plus_Online_R50_VSPW'
+OUTPUT_DIR: './output_DVIS_Plus_Online_R50_VSPW'  # Output directory for online model
