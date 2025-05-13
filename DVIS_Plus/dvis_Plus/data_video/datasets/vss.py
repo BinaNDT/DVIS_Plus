@@ -267,16 +267,16 @@ _PREDEFINED_SPLITS_PANOVSPW = {
     #     "VSPW_480p/test.txt",
     # ),
     "HurricaneVidNet_vss_video_train": (
-        "vspw_format/data/",
-        "vspw_format/train.txt"
+        "vspw_format_resample/data/",
+        "vspw_format_resample/train.txt"
     ),
     "HurricaneVidNet_vss_video_val": (
-        "vspw_format/data/",
-        "vspw_format/val.txt"
+        "vspw_format_resample/data/",
+        "vspw_format_resample/val.txt"
     ),
     "HurricaneVidNet_vss_video_test": (
-        "vspw_format/data/",
-        "vspw_format/test.txt"
+        "vspw_format_resample/data/",
+        "vspw_format_resample/test.txt"
     ),
 }
 
